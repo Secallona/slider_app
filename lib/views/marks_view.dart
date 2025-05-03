@@ -1,10 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:slider_app/viewmodel/viewmodel.dart';
 
 class MarksView extends StatelessWidget {
   const MarksView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    var appState = context.watch<Viewmodel>();
+    return Scaffold(
+      appBar: AppBar(title: Text("Marks")),
+      //Utilizamos ListView.builder para iterar sobre la lista de marcas y mostrar cada una en un Card.
+      body: ListView.builder(
+        itemCount: appState.top5marks.length,
+        itemBuilder: (context, index) {
+          return Center(
+            child: Card(
+              elevation: 5,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ListTile(
+                  title: Text("Score: ${appState.top5marks[index][0]}"),
+                  subtitle: Text(
+                    "Date: ${appState.top5marks[index][1].toString()}",
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
   }
 }
