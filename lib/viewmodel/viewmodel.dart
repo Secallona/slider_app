@@ -9,6 +9,7 @@ class Viewmodel extends ChangeNotifier {
   int get score => _game.score;
   int get rounds => _game.rounds;
   List<List<dynamic>> get marks => _game.marks;
+  List<List<dynamic>> get top5marks => _game.top5marks;
 
   void calculatePoints(double sliderValue) {
     _game.calculatePoints(sliderValue);
