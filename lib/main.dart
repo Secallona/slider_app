@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:slider_app/app_colors.dart'; 
+import 'package:slider_app/background_view.dart';
+import 'package:slider_app/game.dart';
+import 'package:slider_app/slider_widget.dart';
+import 'package:provider/provider.dart';
+import 'package:slider_app/viewmodel.dart';
 
 void main() {
   runApp(const MainApp());
@@ -9,7 +15,17 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(home: Scaffold(body: ContentView()));
+    return ChangeNotifierProvider(
+      create: (context) => Viewmodel(),
+      child: MaterialApp(
+      theme: ThemeData(scaffoldBackgroundColor: AppColors.backgroundColor),
+      home: Scaffold(
+        body:Stack(children: [
+          const ContentView(),
+          const BackgroundView(),
+        ],)),
+    ),
+    );
   }
 }
 
@@ -24,35 +40,49 @@ class _ContentViewState extends State<ContentView> {
   double _value = 50.0;
   final double _min = 1.0;
   final double _max = 100.0;
+  final Game _game = Game();
 
   @override
   Widget build(BuildContext context) {
+    var appState = context.watch<Viewmodel>();
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text("💀💀💀💀"),
-          Text("68"),
+          Text("💀💀💀💀", style: Theme.of(context).textTheme.headlineMedium),
+          Text(
+            "${_game.targetValue}",
+            style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+              letterSpacing: -1,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text("${_min.toInt()}"),
-                Expanded(
-                  child: Slider(
-                    value: _value,
-                    onChanged: _onChanged,
-                    min: _min,
-                    max: _max,
-                  ),
-                ),
-                Text("${_max.toInt()}"),
-              ],
+            child: SliderWidget(
+              value: _value,
+              min: _min,
+              max: _max,
+              onChanged: _onChanged,
             ),
           ),
           Text("${_value.toInt()}"),
-          ElevatedButton(onPressed: onPressed, child: Text("TRY")),
+          ElevatedButton(
+            onPressed: onPressed,
+            style: ElevatedButton.styleFrom(
+              minimumSize: Size(48, 48),
+              backgroundColor: AppColors.primaryColor,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            child: Text(
+              "TRY",
+              style: Theme.of(
+                context,
+              ).textTheme.titleLarge?.copyWith(color: Colors.white),
+            ),
+          ),
         ],
       ),
     );
@@ -67,5 +97,26 @@ class _ContentViewState extends State<ContentView> {
 
   void onPressed() {
     print("Botón pulsado");
+
+    _game.calculatePoints(_value);
+    showDialog(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            title: Text("Felicidades"),
+            content: Text("Has conseguido ${_game.points} puntos"),
+            actions: [
+              ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    _game.reset();
+                  });
+                  Navigator.of(context).pop();
+                },
+                child: Text("OK"),
+              ),
+            ],
+          ),
+    );
   }
 }
