@@ -23,6 +23,8 @@ class Game {
     int sliderValueInt = sliderValue.round().toInt();
     int difference = (_targetValue - sliderValueInt).abs();
     _points = (MAX_VALUE - difference);
+    _score += _points;
+    _rounds++;
   }
 
   void reset() {

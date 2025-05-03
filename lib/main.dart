@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:slider_app/app_colors.dart'; 
-import 'package:slider_app/background_view.dart';
-import 'package:slider_app/game.dart';
+import 'package:slider_app/views/background_view.dart';
+import 'package:slider_app/models/game.dart';
 import 'package:slider_app/slider_widget.dart';
 import 'package:provider/provider.dart';
-import 'package:slider_app/viewmodel.dart';
+import 'package:slider_app/viewmodel/viewmodel.dart';
 
 void main() {
   runApp(const MainApp());
@@ -21,8 +21,8 @@ class MainApp extends StatelessWidget {
       theme: ThemeData(scaffoldBackgroundColor: AppColors.backgroundColor),
       home: Scaffold(
         body:Stack(children: [
-          const ContentView(),
           const BackgroundView(),
+          const ContentView(),
         ],)),
     ),
     );
@@ -51,7 +51,7 @@ class _ContentViewState extends State<ContentView> {
         children: [
           Text("💀💀💀💀", style: Theme.of(context).textTheme.headlineMedium),
           Text(
-            "${_game.targetValue}",
+            "${appState.targetValue}",
             style: Theme.of(context).textTheme.headlineMedium?.copyWith(
               letterSpacing: -1,
               fontWeight: FontWeight.bold,
@@ -98,20 +98,21 @@ class _ContentViewState extends State<ContentView> {
   void onPressed() {
     print("Botón pulsado");
 
-    _game.calculatePoints(_value);
+    var appState = Provider.of<Viewmodel>(context, listen: false);
+    appState.calculatePoints(_value);
     showDialog(
       context: context,
       builder:
           (context) => AlertDialog(
             title: Text("Felicidades"),
-            content: Text("Has conseguido ${_game.points} puntos"),
+            content: Text("Has conseguido ${appState.points} puntos"),
             actions: [
               ElevatedButton(
                 onPressed: () {
                   setState(() {
-                    _game.reset();
+                    appState.reset();
                   });
-                  Navigator.of(context).pop();
+                  Navigator.pop(context);
                 },
                 child: Text("OK"),
               ),

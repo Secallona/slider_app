@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:slider_app/game.dart';
+import 'package:slider_app/models/game.dart';
 
 class Viewmodel extends ChangeNotifier {
   final Game _game = Game();
