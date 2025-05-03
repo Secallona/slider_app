@@ -30,7 +30,7 @@ class BackgroundView extends StatelessWidget {
             children: [
               NumberView(text: "SCORE", value: appState.score),
               Spacer(),
-              NumberView(text: "TARGET", value: appState.rounds),
+              NumberView(text: "ROUNDS", value: appState.rounds),
             ],
           ),
         ],
